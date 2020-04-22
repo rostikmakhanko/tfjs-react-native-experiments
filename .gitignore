@@ -62,5 +62,5 @@ buck-out/
 .expo/*
 
 #Android build files
-android/app/src/main/assets/index.android.bundle
+android/app/src/main/assets
 android/gradle/wrapper
