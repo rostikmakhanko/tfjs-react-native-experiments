@@ -20,6 +20,7 @@ export default function App() {
   };
 
   const onOpenPhotoButtonPress = (options: Options) => {
+    console.log('Choose photo');
     ImagePicker.showImagePicker(options, (response) => {
       // console.log('Response = ', response);
 
