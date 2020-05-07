@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.9.0",
+    "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs": "^1.7.3",
     "@tensorflow/tfjs-node": "^1.7.3",
     "@tensorflow/tfjs-react-native": "^0.2.3",
@@ -17,6 +18,7 @@
     "expo-gl": "^8.1.0",
     "expo-gl-cpp": "^8.1.0",
     "expo-updates": "~0.1.0",
+    "get-image-data": "^4.1.0",
     "prettier": "^2.0.5",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",

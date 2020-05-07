@@ -7,6 +7,14 @@ import irisTesting from "./testing.json";
 
 type State = {
   isTfReady: boolean;
+  irisModelOutput: string;
+  irisModel?: tf.Sequential;
+};
+
+const irisSpecies = ["setosa", "virginica", "versicolor"];
+
+const getIrisTypeByTensor = (tensor: number[]) => {
+  return irisSpecies[tensor.indexOf(Math.max(...tensor))];
 };
 
 export class TensorFlow extends React.Component<any, State> {
@@ -14,6 +22,8 @@ export class TensorFlow extends React.Component<any, State> {
     super(props);
     this.state = {
       isTfReady: false,
+      irisModelOutput: "No output",
+      irisModel: undefined,
     };
   }
 
@@ -52,6 +62,9 @@ export class TensorFlow extends React.Component<any, State> {
     const train_data = async (model: tf.Sequential) => {
       for (let i = 0; i < 15; i++) {
         const res = await model.fit(trainingData, outputData, { epochs: 40 });
+        this.setState({
+          irisModelOutput: "Training #" + i + " " + res.history.loss[0],
+        });
         console.log("Training #", i, res.history.loss[0]);
       }
     };
@@ -82,12 +95,22 @@ export class TensorFlow extends React.Component<any, State> {
       await train_data(model);
 
       (model.predict(testingData) as tf.Tensor).print();
+
+      this.setState({ irisModel: model });
+      this.setState({
+        irisModelOutput: "Finished training",
+      });
+
+      return model;
     };
 
     console.log("Run iris");
 
     runIrisModel()
-      .then(() => console.log("Ran model"))
+      .then((model: tf.Sequential) => {
+        console.log("Ran model");
+        return model;
+      })
       .catch((err) => console.log(err));
   };
 
@@ -106,7 +129,8 @@ export class TensorFlow extends React.Component<any, State> {
         <Text>
           {this.state.isTfReady ? "TF is ready!" : "TF is not ready:("}
         </Text>
-        <Button title={"Run iris model"} onPress={this.runModel} />
+        <Button title={"Run model"} onPress={this.runModel} />
+        <Text>{this.state.irisModelOutput}</Text>
       </View>
     );
   }
