@@ -13,6 +13,7 @@ import ImagePicker from "react-native-image-picker";
 import { TensorFlow } from "./TensorFlow";
 import * as tf from "@tensorflow/tfjs";
 import * as tf_rn from "@tensorflow/tfjs-react-native";
+import { MobileNet } from "./MobileNet";
 
 type Options = {
   title: string;
@@ -20,8 +21,7 @@ type Options = {
 };
 
 export default function App() {
-  const [photoUri, setPhotoUri] = useState({ uri: "" });
-  const [imageTensor, setImageTensor] = useState("No imageTensor yet");
+  const [imageUri, setImageUri] = useState({ uri: "" });
 
   const openPhotoImagePickerOptions = {
     title: "Open Photo",
@@ -44,52 +44,32 @@ export default function App() {
         console.log("User tapped custom button: ", response.customButton);
       } else {
         console.log(response.uri);
-        setPhotoUri({ uri: response.uri });
-        convertImageToTensor(response.uri);
+        setImageUri({ uri: response.uri });
       }
     });
   };
 
-  const convertImageToTensor = async (uri: string) => {
-    const image = require('./photo.jpeg');
-    const imageAssetPath = Image.resolveAssetSource(image);
-    console.log("hello");
-    const response = await tf_rn.fetch(imageAssetPath.uri, {}, { isBinary: true });
-    console.log("hello1");
-    const rawImageData = await response.arrayBuffer();
-    console.log("hello2");
-    const imageTensor = tf_rn.decodeJpeg(new Uint8Array(rawImageData));
-    console.log("hello3");
-    setImageTensor(imageTensor.toString());
-    console.log("hello", imageTensor);
-    return imageTensor;
-  };
-
   return (
     <View style={styles.container}>
-      <TensorFlow />
-      <Text>Hello</Text>
+      {/*<TensorFlow />*/}
       <Button
         title={"Pick photo"}
         onPress={() => {
           onOpenPhotoButtonPress(openPhotoImagePickerOptions);
         }}
       />
-      <ScrollView>
-        {photoUri.uri ? (
-          <Image
-            style={{ width: 200, height: 200 }}
-            source={photoUri}
-            onLoad={(
-              loadImageEvent: NativeSyntheticEvent<ImageLoadEventData>
-            ) => console.log(loadImageEvent)}
-          />
-        ) : (
-          <></>
-        )}
-
-        <Text>{imageTensor}</Text>
-      </ScrollView>
+      {imageUri.uri ? (
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={imageUri}
+          onLoad={(loadImageEvent: NativeSyntheticEvent<ImageLoadEventData>) =>
+            console.log(loadImageEvent)
+          }
+        />
+      ) : (
+        <></>
+      )}
+      <MobileNet imageUri={imageUri.uri} />
     </View>
   );
 }
