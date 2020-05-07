@@ -10,9 +10,6 @@ import {
   View,
 } from "react-native";
 import ImagePicker from "react-native-image-picker";
-import { TensorFlow } from "./TensorFlow";
-import * as tf from "@tensorflow/tfjs";
-import * as tf_rn from "@tensorflow/tfjs-react-native";
 import { MobileNet } from "./MobileNet";
 
 type Options = {
@@ -22,6 +19,7 @@ type Options = {
 
 export default function App() {
   const [imageUri, setImageUri] = useState({ uri: "" });
+  const [imageData, setImageData] = useState("");
 
   const openPhotoImagePickerOptions = {
     title: "Open Photo",
@@ -45,6 +43,7 @@ export default function App() {
       } else {
         console.log(response.uri);
         setImageUri({ uri: response.uri });
+        setImageData(response.data);
       }
     });
   };
@@ -69,7 +68,7 @@ export default function App() {
       ) : (
         <></>
       )}
-      <MobileNet imageUri={imageUri.uri} />
+      <MobileNet imageUri={imageUri.uri} imageData={imageData} />
     </View>
   );
 }

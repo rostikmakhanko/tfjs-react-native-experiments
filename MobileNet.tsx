@@ -3,9 +3,11 @@ import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-react-native";
 import { Button, Image, StyleSheet, Text, View } from "react-native";
 import * as tf_rn from "@tensorflow/tfjs-react-native";
+import { decode } from "base64-arraybuffer";
 
 type Props = {
   imageUri: string;
+  imageData: string;
 };
 
 type State = {
@@ -52,7 +54,10 @@ export class MobileNet extends React.Component<Props, State> {
       { isBinary: true }
     );
     const rawImageData = await response.arrayBuffer();
-    const imageTensor = tf_rn.decodeJpeg(new Uint8Array(rawImageData));
+    console.log(new Uint8Array(rawImageData));
+    const imageTensor = tf_rn.decodeJpeg(
+      new Uint8Array(decode(this.props.imageData))
+    );
     this.setState({ imageTensor: imageTensor.toString() });
     return imageTensor;
   }
@@ -65,7 +70,6 @@ export class MobileNet extends React.Component<Props, State> {
 
     const mobileNet = await require("@tensorflow-models/mobilenet");
     const model = await mobileNet.load();
-
     const predictions = await model.classify(tensor);
 
     if (predictions.length === 0) {
